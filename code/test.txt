@@ -1,0 +1,14 @@
+let max(a, b) =
+	if a < b then b else a
+end
+
+let min(a, b) =
+	if a < b then a else b
+end
+
+let clamp(value, lower, upper) =
+	max(lower, min(value, upper))
+end
+
+print(clamp(10, 0, 5))
+print(max(20,5))
