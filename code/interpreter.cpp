@@ -6,6 +6,82 @@ Value* lookup(const char* name, symtable<Value*>* env) {
 	return result;
 }
 
+bool closedin(std::vector<const char*> vs, Expression* e) {
+	switch (e->expType) {
+	case E_Integer: 
+	{
+		return true;
+	} break;
+	case E_Variable:
+	{
+		bool found = false;
+		for (auto& element : vs) {
+			if (strcmp(element, ((Var*)e)->name) == 0) { found = true; break; }
+		}
+		return (found ? true : false);
+	} break;
+	case E_LetBinding:
+	{
+		auto vs1 = vs;
+		vs1.push_back(((Variable*)(((Let*)e)->variable))->name);
+		bool closed = closedin(vs, (((Let*)e)->binding));
+		return (closed && closedin(vs1, e) ? true : false);
+	} break;
+	case E_BinOp:
+	{
+		return (closedin(vs, ((BinOp*)e)->left) && closedin(vs, ((BinOp*)e)->right) ? true : false);
+	} break;
+	}
+}
+
+std::set<const char*> freevars(Expression* e) {
+	switch (e->expType) {
+	case E_Integer: 
+	{
+		printf("Hit an integer!\n");
+		return std::set<const char*>();
+	} break;
+	case E_Variable: 
+	{
+		std::set<const char*> result;
+		result.insert(((Variable*)e)->name);
+		return result;
+	} break;
+	case E_LetBinding:
+	{
+		printf("Hit let-binding!\n");
+		std::set<const char*> erhs;
+		std::set<const char*> result;
+		std::vector<const char*> bounded;
+
+		auto body = freevars(((Let*)e)->expr); // Get the free variables in the body.
+		auto data = freevars(((Let*)e)->binding);
+		body.erase(((Variable*)((Let*)e)->variable)->name);
+		bounded.push_back(((Variable*)((Let*)e)->variable)->name);
+		for (auto const& var : data) {
+			if (!closedin(bounded, ((Let*)e)->binding) && strcmp(((Variable*)((Let*)e)->variable)->name, var) != 0) {
+				erhs.insert(var);
+			}
+		}
+		std::set_union(erhs.begin(), erhs.end(), body.begin(), body.end(), std::inserter(result, result.begin()));
+		return result;
+	} break;
+	case E_BinOp: 
+	{
+		printf("Hit an BinOp!\n");
+		auto fe1 = freevars(((BinOp*)e)->left);
+		auto fe2 = freevars(((BinOp*)e)->right);
+		std::set<const char*> result;
+		std::set_union(fe1.begin(), fe1.end(), fe2.begin(), fe2.end(), std::inserter(result, result.begin()));
+		return result;
+	} break;
+	case E_Print: 
+	{
+		return freevars(((Print*)e)->expr);
+	} break;
+	}
+};
+
 Value* eval(Expression* e, symtable<Value*>* env) {
 	switch (e->expType) {
 	case E_Integer:
@@ -211,6 +287,9 @@ std::string toString(Expression* e) {
 	} break;
 	case E_IfThenElse: {
 		buffer << "if " << toString(((If*)e)->ifexp) << " then " << toString(((If*)e)->thenexp) << " else " << toString(((If*)e)->elseexp);
+	} break;
+	case E_Print: {
+		buffer << "print(" << toString(((Print*)e)->expr) << ")";
 	} break;
 	case E_UnOp: {
 		switch ((((UnOp*)e)->opType)) {

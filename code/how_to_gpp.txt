@@ -1,0 +1,1 @@
+g++ main.cpp interpreter.cpp lexer.cpp parser.cpp typechecker.cpp ast.cpp shared.cpp -o test

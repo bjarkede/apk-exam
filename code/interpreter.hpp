@@ -10,6 +10,8 @@
 #include <sstream>
 #include <iostream>
 #include <map>
+#include <set>
+#include <algorithm>
 
 enum ValueType {
 	V_Integer,
@@ -62,6 +64,8 @@ Value* MakeClosureVal(const char* f,
 // Interpreting
 Value* eval(Expression* Expr, symtable<Value*>* env);
 Value* lookup(const char* name, symtable<Value*>* env);
+std::set<const char*> freevars(Expression* e);
+bool closedin(std::vector<const char*> vs, Expression* e);
 
 // Utility
 std::string toString(Expression* Expr);
