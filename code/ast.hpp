@@ -30,6 +30,7 @@ enum ExpressionType
 {
 	E_Integer,
 	E_String,
+	E_Bool,
 	E_Variable,
 	E_LetBinding,
 	E_LetFun,
@@ -50,6 +51,10 @@ typedef struct Expression {
 typedef struct Integer : public Expression {
 	unsigned long long value;
 } Integer;
+
+typedef struct Bool : public Expression {
+	bool value;
+} Bool;
 
 typedef struct Variable : public Expression {
 	const char* name;

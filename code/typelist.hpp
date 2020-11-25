@@ -74,36 +74,6 @@ namespace TL {
 		static constexpr size_t value = 1 + Length<U>::value;
 	};
 
-	// Type-switching.
-	template <typename List, int N = 0, bool Stop=(N == Length<List>::value)>
-	struct TypeSwitch;
-
-	template <typename List, int N, bool Stop>
-	struct TypeSwitch
-	{
-		template <typename Functor>
-		decltype(Functor().template operator() < typename NthElementT<List, N>::Type > ()) operator()(int i, Functor f)
-		{
-			if (i == N) {
-				return f.template operator()<typename NthElementT<List, N>::Type> ();
-			}
-			else {
-				TypeSwitch<List, N + 1> next_element;
-				return next_element.operator()(i, f);
-			}
-		}
-	};
-
-	// Base-case
-	template <typename List, int N>
-	struct TypeSwitch<List, N, true>
-	{
-		template <typename Functor>
-	    decltype(Functor().template operator() < NullType > ()) operator()(int, Functor)
-		{
-			FatalError("Index is out of range.");
-		}
-	};
 };
 
 
