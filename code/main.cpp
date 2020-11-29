@@ -31,8 +31,8 @@ int main(int argc, char** argv) {
 	valueenv.empty(20);
 
 	for (auto& e : expList) {
-		std::map<const char*, Type*> tenv = makeInitialTypeEnv(e);
-		auto t = typeCheck(e, tenv);
+		//std::map<const char*, Type*> tenv = makeInitialTypeEnv(e);
+		//auto t = typeCheck(e, tenv);
 		auto v = eval(e, &valueenv);
 		/*if (v != nullptr) {
 			switch (v->vType) {

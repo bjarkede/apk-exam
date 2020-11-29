@@ -1,8 +1,6 @@
 #include "typechecker.hpp"
 #include "typelist.hpp"
 
-#include <functional>
-
 std::map<const char*, Type*> makeInitialTypeEnv(Expression* program) {
 	std::map<const char*, Type*> tenv;
 	std::set<const char*> fv = freevars(program);
@@ -15,7 +13,12 @@ std::map<const char*, Type*> makeInitialTypeEnv(Expression* program) {
 Type* typeCheck(Expression* e, std::map<const char*, Type*> tenv) {
 	
 	// Define a type-list of all the different types.
-	typedef TL::make_typelist<IntType, StringType, BoolType> TestTypes;
+	typedef TL::make_typelist<Integer, Bool, Variable> PrimitivesTypelist;
+	typedef TL::make_typelist<BinOp, UnOp, Paren> OpTypelist;
+	typedef TL::make_typelist<Let, LetFun, Call, IfThenElse> FuncTypelist;
+
+	// Combine into a typelist containing all supported types.
+	typedef TL::Merge<PrimitivesTypelist, OpTypelist> LanguageTypelist;
 	
 	switch (e->expType) {
 	case E_Integer: {

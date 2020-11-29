@@ -74,6 +74,24 @@ namespace TL {
 		static constexpr size_t value = 1 + Length<U>::value;
 	};
 
+	// Merge two typelists
+	template <typename Left, typename Right>
+	struct MergeT;
+
+	template <typename Right>
+	struct MergeT<NullType, Right>
+	{
+		typedef Right Type;
+	};
+
+	template <typename Front, typename Tail, typename Right>
+	struct MergeT<Typelist<Front, Tail>, Right>
+	{
+		typedef Typelist<Front, typename MergeT<Tail, Right>::Type> Type;
+	};
+
+	template <typename Left, typename Right>
+	using Merge = typename MergeT<Left, Right>::Type;
 };
 
 

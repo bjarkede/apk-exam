@@ -96,3 +96,11 @@ Expression* PrintExp(Expression* expr) {
 	e->expr = expr;
 	return e;
 }
+
+Expression* PowExp(Expression* e1, Expression* e2) {
+	Power* e = (Power*)malloc(sizeof(Power));
+	e->expType = E_Power;
+	e->e1 = e1;
+	e->e2 = e2;
+	return e;
+}
