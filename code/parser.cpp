@@ -227,6 +227,13 @@ Exp* ParseExpressionOperand(LexerState* ls) {
 		check_match(ls, ')', ')', ls->t.line);
 		return PowExp(e1, e2);
 	}
+	case TK_FIB: {
+		ProcessNextToken(ls);
+		check_match(ls, '(', '(', ls->t.line);
+		Exp* expr = ParseExpression(ls);
+		check_match(ls, ')', ')', ls->t.line);
+		return FibExp(expr);
+	}
 	case TK_LET: {
 		// Expr -> let VAR = Expr in Expr end 
 		check_match(ls, TK_LET, TK_LET, ls->t.line);

@@ -41,6 +41,7 @@ enum ExpressionType
 	E_Paren,
 	E_Print,
 	E_Power,
+	E_Fib,
 	E_NoType,
 	E_Count
 };
@@ -110,6 +111,10 @@ typedef struct Power : public Expression {
 	Expression* e2;
 } Power;
 
+typedef struct Fib : public Expression {
+	Expression* expr;
+} Fib;
+
 // Empty
 Expression* EmptyExp();
 
@@ -135,5 +140,6 @@ Expression* CallExp(Expression* eFun, Buffer args);
 // Helpers
 Expression* PrintExp(Expression* expr);
 Expression* PowExp(Expression* e1, Expression* e2);
+Expression* FibExp(Expression* expr);
 
 #endif

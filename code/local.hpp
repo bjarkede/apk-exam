@@ -27,7 +27,7 @@ typedef union L_VALUE {
 
 enum RESERVED {
 	TK_LET, TK_IF, TK_THEN, TK_ELSE, TK_IN, TK_END,
-	TK_TRUE, TK_FALSE, TK_PRINT, TK_POW, TK_VAR, TK_INT, TK_FLOAT,
+	TK_TRUE, TK_FALSE, TK_PRINT, TK_POW, TK_FIB, TK_VAR, TK_INT, TK_FLOAT,
 	TK_EQ, TK_ASSN, TK_AND, TK_OR, TK_LE, TK_MIN, TK_MAX,
 	TK_SEPR, TK_SEPL, TK_COM, TK_FUNC, TK_STRING,
 	TK_EOZ,
@@ -38,7 +38,7 @@ enum RESERVED {
 };
 
 static const char* const tokens[] = {
-	"let", "if", "then", "else", "in", "end", "true", "false", "print", "pow"
+	"let", "if", "then", "else", "in", "end", "true", "false", "print", "pow", "fib"
 };
 
 #define NUM_RESERVED ((int)(TK_COUNT));

@@ -73,13 +73,52 @@ struct fibN<1> {
 };
 
 template <uint64_t N>
-static inline uint64_t fibseq() {
+static constexpr inline uint64_t fibseq() {
 	return fibN<N>::fib();
 }
 
 // @TODO:
 // Compile-time lookup-table generation.
+// @TODODO:
+// For fun we could make a mixed pool so we are able to store
+// all kinds of different data in the SequenceHolder.
+// Fibonacci-sequence
+template <uint64_t... Values>
+struct SequenceHolder
+{
+	static const uint64_t data[sizeof...(Values)];
+};
 
+// What happens when a sequence gets a variadic list of values.
+// Set the array equals to the Values.
+template <uint64_t... Values>
+constexpr uint64_t SequenceHolder<Values...>::data[sizeof...(Values)] = { Values... };
+
+// Recursive call:
+// Recursively generate the sequence from the F function.
+// When we reach the basis-call the uint64_t... variadic template paramter
+// will be used to construct the array held in SequenceHolder.
+template <unsigned N, template<unsigned> typename F, uint64_t... Values>
+struct GenerateSequenceImpl : public GenerateSequenceImpl<N - 1, F, F<N>::value, Values...> {};
+
+// Basis call (when N equals 0)
+template <template<unsigned> typename F, uint64_t... Values>
+struct GenerateSequenceImpl<0, F, Values...>
+{
+	// When we finished with the recursion insert the Values... into the array.
+	using Result = SequenceHolder<F<0>::value, Values...>;
+};
+
+template<unsigned N, template<unsigned> typename F>
+using GenerateSequence = typename GenerateSequenceImpl<N - 1, F>::Result;
+
+// Functions we use for GenerateSequence<N, Function>
+template<unsigned index> struct FibFunc {
+	enum { value = fibseq<index>() };
+};
+
+// Declarations
 double pow_ct(double x, int p);
+uint64_t factorial(int n);
 
 #endif

@@ -84,7 +84,6 @@ std::set<const char*> freevars(Expression* e) {
 };
 
 Value* eval(Expression* e, symtable<Value*>* env) {
-	printf("fib is: %d\n", fibseq<10>());
 	switch (e->expType) {
 	case E_Integer:
 	{
@@ -134,6 +133,10 @@ Value* eval(Expression* e, symtable<Value*>* env) {
 		Value* v1 = eval(((Power*)e)->e1, env);
 		Value* v2 = eval(((Power*)e)->e2, env);
 		return MakeIntegerVal(pow_ct((((IntVal*)v1)->i), (((IntVal*)v2)->i)));
+	} break;
+	case E_Fib: {
+		Value* v = eval(((Fib*)e)->expr, env);
+		return MakeIntegerVal(factorial((((IntVal*)v)->i)));
 	}
 	case E_Call: {
 		auto fClosure = eval(((Call*)e)->eFun, env);

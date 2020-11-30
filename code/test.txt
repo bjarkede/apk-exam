@@ -1,6 +1,9 @@
-print(pow(24,10))
+// keyword using compile-time array generation
+print(fib(31))
 
-let power(x, n) = 
-	if n == 0 then 1 else x * power(x, n - 1) in print(power(24, 10)) 
+// run-time implementation
+// higher than runtimefib(31) causes bad_alloc...
+let runtimefib(n) = 
+	if n < 2 then n else runtimefib(n - 1) + runtimefib(n - 2) 
+	in print(runtimefib(31)) 
 end
-

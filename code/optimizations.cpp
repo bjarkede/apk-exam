@@ -1,7 +1,12 @@
 #include "optimizations.hpp"
+#include "valuelist.hpp"
+
+const unsigned count = 47; // fib(46) is max
+using FibSequence = GenerateSequence<count, FibFunc>;
 
 // If 'n' is power of 10 we can optimize this call at compile time
 double pow_ct(double x, int p) {
+	using Integers = Valuelist<1,2,3>;
 	switch (p) {
 	case 1:
 	{
@@ -49,5 +54,6 @@ double pow_ct(double x, int p) {
 }
 
 uint64_t factorial(int n) {
-	// Table of factorials
+	if (n == count) FatalError("Tried using compile-time fac outside of bounds!");
+	return FibSequence::data[n];
 }

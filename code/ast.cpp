@@ -104,3 +104,10 @@ Expression* PowExp(Expression* e1, Expression* e2) {
 	e->e2 = e2;
 	return e;
 }
+
+Expression* FibExp(Expression* expr) {
+	Fib* e = (Fib*)malloc(sizeof(Fib));
+	e->expType = E_Fib;
+	e->expr = expr;
+	return e;
+}
