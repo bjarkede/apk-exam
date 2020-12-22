@@ -36,6 +36,7 @@ enum ExpressionType
 	E_LetFun,
 	E_IfThenElse,
 	E_BinOp,
+	E_Lambda,
 	E_Call,
 	E_UnOp,
 	E_Paren,
@@ -115,6 +116,11 @@ typedef struct Fib : public Expression {
 	Expression* expr;
 } Fib;
 
+typedef struct LambdaExp : public Expression {
+	Buffer params;
+	Expression* body;
+} Lambda;
+
 // Empty
 Expression* EmptyExp();
 
@@ -136,6 +142,7 @@ Expression* IfThenElseExp(Expression* ifexp, Expression* thenexp, Expression* el
 Expression* LetExp(Expression* var, Expression* binding, Expression* expr);
 Expression* LetFunExp(const char* f, Buffer x, Expression* fbody, Expression* letbody);
 Expression* CallExp(Expression* eFun, Buffer args);
+Expression* LambdaExp(Expression* expr, Buffer params);
 
 // Helpers
 Expression* PrintExp(Expression* expr);

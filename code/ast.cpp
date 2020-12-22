@@ -111,3 +111,11 @@ Expression* FibExp(Expression* expr) {
 	e->expr = expr;
 	return e;
 }
+
+Expression* LambdaExp(Expression* expr, Buffer params) {
+	Lambda* e = (Lambda*)malloc(sizeof(Lambda));
+	e->expType = E_Lambda;
+	e->body = expr;
+	e->params = params;
+	return e;
+}

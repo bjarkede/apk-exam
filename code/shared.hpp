@@ -14,6 +14,7 @@
 #include <set>
 #include <map>
 #include <vector>
+#include <iostream>
 
 #define s8 int8_t
 #define s16 int16_t
@@ -55,6 +56,7 @@ struct File {
 bool ReadEntireFile(Buffer& buffer, const char* filePath);
 bool AllocBuffer(Buffer& buffer, uptr bytes);
 
+// Debugging
 void PrintDebug(const char* format, ...);
 void PrintError(const char* format, ...);
 void FatalError(const char* format, ...);

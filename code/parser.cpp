@@ -226,14 +226,14 @@ Exp* ParseExpressionOperand(LexerState* ls) {
 		Exp* e2 = ParseExpression(ls);
 		check_match(ls, ')', ')', ls->t.line);
 		return PowExp(e1, e2);
-	}
+	} break;
 	case TK_FIB: {
 		ProcessNextToken(ls);
 		check_match(ls, '(', '(', ls->t.line);
 		Exp* expr = ParseExpression(ls);
 		check_match(ls, ')', ')', ls->t.line);
 		return FibExp(expr);
-	}
+	} break;
 	case TK_LET: {
 		// Expr -> let VAR = Expr in Expr end 
 		check_match(ls, TK_LET, TK_LET, ls->t.line);
@@ -261,7 +261,6 @@ Exp* ParseExpressionOperand(LexerState* ls) {
 			check_match(ls, TK_END, TK_END, ls->t.line);
 			return LetFunExp(((Var*)((Call*)e)->eFun)->name, ((Call*)e)->args, fbody, letbody);
 		} break;
-	
 		default:
 			FatalError("SyntaxError: Invalid input: %c, Line: %d[%d ].", (char)ls->t.token, ls->t.line, ls->t.col);
 		}

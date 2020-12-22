@@ -78,8 +78,6 @@ static constexpr inline uint64_t fibseq() {
 }
 
 // @TODO:
-// Compile-time lookup-table generation.
-// @TODODO:
 // For fun we could make a mixed pool so we are able to store
 // all kinds of different data in the SequenceHolder.
 // Fibonacci-sequence
@@ -113,6 +111,8 @@ template<unsigned N, template<unsigned> typename F>
 using GenerateSequence = typename GenerateSequenceImpl<N - 1, F>::Result;
 
 // Functions we use for GenerateSequence<N, Function>
+// @TODO:
+// Could replace these with `functors`.
 template<unsigned index> struct FibFunc {
 	enum { value = fibseq<index>() };
 };

@@ -1,3 +1,6 @@
+// error testing:
+}
+
 // keyword using compile-time array generation
 print(fib(31))
 

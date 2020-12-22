@@ -14,6 +14,8 @@ int main(int argc, char** argv) {
         FatalError("Couldn't process input stream: %s\n", argv[1]);
     }
 
+
+
 	std::vector<Expression*> expList;
     
 	ProcessNextToken(ls);
