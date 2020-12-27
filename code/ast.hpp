@@ -81,7 +81,7 @@ typedef struct Paren : public Expression {
 typedef struct Let : public Expression {
 	Expression* variable;
 	Expression* binding;
-	Buffer bindings;
+	//Buffer bindings;
 	Expression* expr;
 } Let;
 

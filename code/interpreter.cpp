@@ -37,9 +37,8 @@ bool closedin(std::vector<const char*> vs, Expression* e) {
 
 std::set<const char*> freevars(Expression* e) {
 	switch (e->expType) {
-	case E_Integer: 
+	case E_Integer: case E_Fib: 
 	{
-		printf("Hit an integer!\n");
 		return std::set<const char*>();
 	} break;
 	case E_Variable: 
@@ -50,26 +49,30 @@ std::set<const char*> freevars(Expression* e) {
 	} break;
 	case E_LetBinding:
 	{
-		printf("Hit let-binding!\n");
 		std::set<const char*> erhs;
 		std::set<const char*> result;
 		std::vector<const char*> bounded;
 
-		auto body = freevars(((Let*)e)->expr); // Get the free variables in the body.
-		auto data = freevars(((Let*)e)->binding);
-		body.erase(((Variable*)((Let*)e)->variable)->name);
-		bounded.push_back(((Variable*)((Let*)e)->variable)->name);
-		for (auto const& var : data) {
-			if (!closedin(bounded, ((Let*)e)->binding) && strcmp(((Variable*)((Let*)e)->variable)->name, var) != 0) {
-				erhs.insert(var);
+		// Let-binding with no in end...
+		if (((Let*)e)->expr != NULL) {
+			auto body = freevars(((Let*)e)->expr); // Get the free variables in the body.
+			auto data = freevars(((Let*)e)->binding);
+			body.erase(((Variable*)((Let*)e)->variable)->name);
+			bounded.push_back(((Variable*)((Let*)e)->variable)->name);
+			for (auto const& var : data) {
+				if (!closedin(bounded, ((Let*)e)->binding) && strcmp(((Variable*)((Let*)e)->variable)->name, var) != 0) {
+					erhs.insert(var);
+				}
 			}
+			std::set_union(erhs.begin(), erhs.end(), body.begin(), body.end(), std::inserter(result, result.begin()));
 		}
-		std::set_union(erhs.begin(), erhs.end(), body.begin(), body.end(), std::inserter(result, result.begin()));
+		else {
+			result.insert(((Variable*)e)->name);
+		}
 		return result;
 	} break;
 	case E_BinOp: 
 	{
-		printf("Hit an BinOp!\n");
 		auto fe1 = freevars(((BinOp*)e)->left);
 		auto fe2 = freevars(((BinOp*)e)->right);
 		std::set<const char*> result;

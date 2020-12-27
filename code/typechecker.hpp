@@ -13,6 +13,7 @@ enum TypType
 	T_String,
 	T_Variable,
 	T_Bool,
+	T_Fun,
 	T_Count
 };
 
@@ -32,10 +33,16 @@ typedef struct BoolType : public Type {
 typedef struct StringType : public Type {
 } StringType;
 
+typedef struct FunType : public Type {
+	Buffer paramtypes;
+	Type* resulttype;
+} FunType;
+
 std::map<const char*, Type*> makeInitialTypeEnv(Expression* e);
 Type* typeCheck(Expression* e, std::map<const char*, Type*> tenv);
 
 // Constructors
 Type* IntegerTyp();
+Type* BoolTyp();
 
 #endif

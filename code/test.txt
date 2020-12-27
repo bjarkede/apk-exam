@@ -1,3 +1,7 @@
+// Testing typechecker
+//print(1 + 2)
+
+// Testing fib and compile-time things
 let input = 28 end
 
 // keyword using compile-time array generation
@@ -5,7 +9,7 @@ print(fib(input))
 
 // run-time implementation
 // higher than runtimefib(31) causes bad_alloc...
-let runtimefib(n) = 
-	if n < 2 then n else runtimefib(n - 1) + runtimefib(n - 2) 
-	in print(runtimefib(input)) 
-end
+//let runtimefib(n) = 
+	//if n < 2 then n else runtimefib(n - 1) + runtimefib(n - 2) 
+	//in print(runtimefib(input)) 
+//end
