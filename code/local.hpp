@@ -68,12 +68,4 @@ typedef struct LexerState {
 	Buffer TBuffer; // Buffer for tokens.
 } LexerState;
 
-// APK Custom-types
-struct m {
-	m(s64 n) : n(n) {}
-	s64 n;
-};
-
-m operator""_m(s64 n) { return m(n); }
-
 #endif

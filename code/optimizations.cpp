@@ -1,7 +1,7 @@
 #include "optimizations.hpp"
 #include "valuelist.hpp"
 
-#define FIB_MAX 47
+#define FIB_MAX 32
 
 using FibSequence = GenerateSequence<FIB_MAX, FibFunc>;
 

@@ -1,12 +1,11 @@
-// error testing:
-}
+let input = 28 end
 
 // keyword using compile-time array generation
-print(fib(31))
+print(fib(input))
 
 // run-time implementation
 // higher than runtimefib(31) causes bad_alloc...
 let runtimefib(n) = 
 	if n < 2 then n else runtimefib(n - 1) + runtimefib(n - 2) 
-	in print(runtimefib(31)) 
+	in print(runtimefib(input)) 
 end
