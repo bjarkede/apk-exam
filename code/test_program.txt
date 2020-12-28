@@ -2,11 +2,11 @@
 // Where we pass a a function as an argument to another function.
 let f(x) = 
 	let g(y) = x * y in g end 
-	in print(f(6) (7)) // should work xd
+	in print(f(6) (7))
 end
 
 // Testing fib and compile-time things
-let input = 29 end
+let input = 10 end
 
 // keyword using compile-time array generation
 print(fib(input))

@@ -10,7 +10,6 @@ symtable<Value*> valueenv;
 
 int main(int argc, char** argv) {
 
-    //LexerState* ls = (LexerState*)malloc(sizeof(LexerState));
 	LexerState ls;
 
     if (!InitializeLexer(argv[1], &ls)) {
@@ -44,8 +43,13 @@ int main(int argc, char** argv) {
 		if (typecheck) {
 			std::map<const char*, Type*> tenv = makeInitialTypeEnv(e);
 			auto t = typeCheck(e, tenv);
+			free(t);
 		}
+		
 		auto v = eval(e, &valueenv);
+		
+		free(e);
+		free(v);
 	}
 
     return 1;

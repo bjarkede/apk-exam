@@ -1,1 +1,1 @@
-g++ main.cpp interpreter.cpp lexer.cpp parser.cpp typechecker.cpp ast.cpp shared.cpp optimizations.cpp -std=gnu++17
+g++ main.cpp interpreter.cpp lexer.cpp parser.cpp typechecker.cpp ast.cpp shared.cpp optimizations.cpp -std=gnu++17 -o interpreter

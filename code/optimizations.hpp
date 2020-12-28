@@ -108,7 +108,7 @@ struct GenerateSequenceImpl<0, F, Values...>
 };
 
 template<unsigned N, template<unsigned> typename F>
-using GenerateSequence = typename GenerateSequenceImpl<N - 1, F>::Result;
+using GenerateSequence = typename GenerateSequenceImpl<N, F>::Result;
 
 // Functions we use for GenerateSequence<N, Function>
 // @TODO:
