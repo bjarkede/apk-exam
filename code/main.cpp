@@ -10,9 +10,10 @@ symtable<Value*> valueenv;
 
 int main(int argc, char** argv) {
 
-    LexerState* ls = (LexerState*)malloc(sizeof(LexerState));
+    //LexerState* ls = (LexerState*)malloc(sizeof(LexerState));
+	LexerState ls;
 
-    if (!InitializeLexer(argv[1], ls)) {
+    if (!InitializeLexer(argv[1], &ls)) {
         FatalError("Couldn't process input stream: %s\n", argv[1]);
     }
 
@@ -27,9 +28,9 @@ int main(int argc, char** argv) {
 
 	std::vector<Expression*> expList;
     
-	ProcessNextToken(ls);
-	while (ls->t.token != TK_EOZ) {
-		expList.push_back(ParseExpression(ls));
+	ProcessNextToken(&ls);
+	while (ls.t.token != TK_EOZ) {
+		expList.push_back(ParseExpression(&ls));
 	}
 
 	// @TODO:
