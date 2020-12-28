@@ -47,6 +47,10 @@ std::set<const char*> freevars(Expression* e) {
 		result.insert(((Variable*)e)->name);
 		return result;
 	} break;
+	case E_UnOp:
+	{
+		return freevars(((UnOp*)e)->expr);
+	} break;
 	case E_LetBinding:
 	{
 		std::set<const char*> erhs;
@@ -77,6 +81,22 @@ std::set<const char*> freevars(Expression* e) {
 		auto fe2 = freevars(((BinOp*)e)->right);
 		std::set<const char*> result;
 		std::set_union(fe1.begin(), fe1.end(), fe2.begin(), fe2.end(), std::inserter(result, result.begin()));
+		return result;
+	} break;
+	case E_LetFun:
+	{
+		return std::set<const char*>();
+	} break;
+	case E_Call:
+	{
+		std::set<const char*> result;
+		auto fv = freevars(((Call*)e)->eFun);
+		for(int i = 0; i < (((Call*)e)->args).writeIndex; i++)
+		{
+			auto var = freevars(((Expression**)((Call*)e)->args.buffer)[i]);
+			std::set_union(fv.begin(), fv.end(), var.begin(), var.end(), std::inserter(fv, fv.end()));
+		}
+		printf("fv size: %d\n", fv.size());
 		return result;
 	} break;
 	case E_Print: 

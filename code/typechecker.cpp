@@ -64,13 +64,29 @@ Type* typeCheck(Expression* e, std::map<const char*, Type*> tenv) {
 			FatalError("Type mistmatch at 'if then else', found types %d, %d, %d", contype->t, thentype->t, elsetype->t);
 		}
 	} break;
+	case E_LetFun:
+	{
+		// @TODO:
+		// It might be easier to do typechecking if we add 
+		// Explicit types to our language... but we dont do that... yet.
+		FunType* funtype = (FunType*)malloc(sizeof(funtype));
+		AllocBuffer(funtype->paramtypes, sizeof(Type*)*(((LetFun*)e)->x).length);
+
+		// We need to get all the param types
+		for(int i = 0; i < (((LetFun*)e)->x).writeIndex; i++)
+		{
+			((Type**)funtype->paramtypes.buffer)[funtype->paramtypes.writeIndex++] = typeCheck(((Expression**)((LetFun*)e)->x.buffer)[i], tenv);
+		}
+		funtype->resulttype = typeCheck(((LetFun*)e)->fbody, tenv);
+	} break;
 	case E_Call:
 	{
+		// @TODO:
 		auto funtype = typeCheck(((Call*)e)->eFun, tenv);
 		switch (funtype->t) {
 		case T_Fun:
 		{
-			
+		
 		} break;
 		default:
 			FatalError("Function is not a function.");
@@ -86,7 +102,7 @@ Type* typeCheck(Expression* e, std::map<const char*, Type*> tenv) {
 		} break;
 		default:
 			if (((Let*)e)->expr == NULL)
-				FatalError("Typemistmatch in 'let end', found type %d", lettype->t);
+				FatalError("Typemismatch in 'let end', found type %d", lettype->t);
 			FatalError("Typemismatch in 'let in end'");
 		}
 	} break; 

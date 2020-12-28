@@ -12,6 +12,7 @@
 #include <map>
 #include <set>
 #include <algorithm>
+#include <iterator>
 
 enum ValueType {
 	V_Integer,

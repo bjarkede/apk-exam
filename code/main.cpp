@@ -4,6 +4,8 @@
 #include "typechecker.hpp"
 #include "symtable.hpp"
 
+bool typecheck = false;
+
 symtable<Value*> valueenv;
 
 int main(int argc, char** argv) {
@@ -14,7 +16,14 @@ int main(int argc, char** argv) {
         FatalError("Couldn't process input stream: %s\n", argv[1]);
     }
 
-
+	for(int i = 2; i < argc; ++i)
+	{
+		const char* const arg = argv[i];
+		if(strstr(arg, "-typecheck") == arg)
+		{
+			typecheck = true;
+		}
+	}
 
 	std::vector<Expression*> expList;
     
@@ -22,8 +31,6 @@ int main(int argc, char** argv) {
 	while (ls->t.token != TK_EOZ) {
 		expList.push_back(ParseExpression(ls));
 	}
-
-	//PrintDebug("SyntaxMessage: Input accepted by parser.\n\n");
 
 	// @TODO:
 	// The by value passing of the valueenv is a major bottleneck.
@@ -33,23 +40,12 @@ int main(int argc, char** argv) {
 	valueenv.empty(20);
 
 	for (auto& e : expList) {
-		std::map<const char*, Type*> tenv = makeInitialTypeEnv(e);
-		auto t = typeCheck(e, tenv);
+		if (typecheck) {
+			std::map<const char*, Type*> tenv = makeInitialTypeEnv(e);
+			auto t = typeCheck(e, tenv);
+		}
 		auto v = eval(e, &valueenv);
-		/*if (v != nullptr) {
-			switch (v->vType) {
-			case V_Integer: { 
-				// Only print if the expression returns an integer
-				PrintDebug("Expression: %s\n", toString(e).c_str());
-				PrintDebug("Value: %d\n\n", ((IntVal*)v)->i); 
-			} break;
-			default:
-			{}
-			}
-		}*/
 	}
-
-    //PrintDebug("Finished lexing, parsing and interpreting file: %s\n", argv[1]);
 
     return 1;
 }
