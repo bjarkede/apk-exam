@@ -3,6 +3,7 @@
 #include "interpreter.hpp"
 #include "typechecker.hpp"
 #include "symtable.hpp"
+#include "./hash/hashmap.h"
 
 bool typecheck = false;
 
@@ -25,6 +26,15 @@ int main(int argc, char** argv) {
 		}
 	}
 
+	const size_t buffer_size = 701 * 8 * 4;
+	std::array<std::byte, buffer_size> buffer;
+	
+
+	std::pmr::monotonic_buffer_resource mbr(buffer.data(), buffer.size(),
+	std::pmr::null_memory_resource());
+
+	hmap::hashmap<Value*, const char*> env(&mbr);
+	
 	std::vector<Expression*> expList;
     
 	ProcessNextToken(&ls);
@@ -46,10 +56,11 @@ int main(int argc, char** argv) {
 			free(t);
 		}
 		
-		auto v = eval(e, &valueenv);
+		//auto v = eval(e, &valueenv);
+		auto v2 = eval(e, &env);
 		
 		free(e);
-		free(v);
+		free(v2);
 	}
 
     return 1;

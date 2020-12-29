@@ -1,7 +1,8 @@
 #include "interpreter.hpp"
 #include "optimizations.hpp"
 
-Value* lookup(const char* name, symtable<Value*>* env) {
+Value* lookup(const char* name, hmap::hashmap<Value*, const char*>* env) {
+	printf("made it here lookup var %s\n", name);
 	Value* result = env->lookup(name);
 	if (result->vType == V_NoType) FatalError("InterpreterError: Couldn't find variable [%s] in value environment.", name);
 	return result;
@@ -106,10 +107,11 @@ std::set<const char*> freevars(Expression* e) {
 	}
 };
 
-Value* eval(Expression* e, symtable<Value*>* env) {
+Value* eval(Expression* e, hmap::hashmap<Value*, const char*>* env) {
 	switch (e->expType) {
 	case E_Integer:
 	{
+		printf("made it here int %d\n", (((Integer*)e)->value));
 		return MakeIntegerVal((((Integer*)e)->value));
 	} break;
 	case E_Variable:
@@ -119,7 +121,7 @@ Value* eval(Expression* e, symtable<Value*>* env) {
 	case E_LetBinding: {
 		Value* xval = eval(((Let*)e)->binding, env);
 		if (((Let*)e)->expr != NULL) {
-			symtable<Value*> letbodyenv = *env;
+			hmap::hashmap<Value*, const char*> letbodyenv = *env;
 			letbodyenv.bind(xval, ((Var*)((Let*)e)->variable)->name);
 			return eval(((Let*)e)->expr, &letbodyenv); // Evaluate the expression in-scope.
 		}
@@ -131,7 +133,7 @@ Value* eval(Expression* e, symtable<Value*>* env) {
 	} break;
 	case E_LetFun: {
 		if (((LetFun*)e)->letbody != NULL) {
-			symtable<Value*> bodyenv = *env;
+			hmap::hashmap<Value*, const char*> bodyenv = *env;
 			bodyenv.bind(MakeClosureVal((((LetFun*)e)->f), (((LetFun*)e)->x), (((LetFun*)e)->fbody), *env), (((LetFun*)e)->f));
 			return eval(((LetFun*)e)->letbody, &bodyenv);
 		}
@@ -164,7 +166,7 @@ Value* eval(Expression* e, symtable<Value*>* env) {
 	case E_Call: {
 		auto fClosure = eval(((Call*)e)->eFun, env);
 		if (fClosure->vType == V_Closure) {
-			symtable<Value*> fbodyenv = ((Closure*)fClosure)->fdeclenv;
+			hmap::hashmap<Value*, const char*> fbodyenv = ((Closure*)fClosure)->fdeclenv;
 			Buffer varNames = ((Closure*)fClosure)->x;
 			// Evaluate each expression in the function call arguments and
 			// bind them to the function body.
@@ -186,6 +188,7 @@ Value* eval(Expression* e, symtable<Value*>* env) {
 	} break;
 	case E_BinOp:
 	{
+		printf("made it to binop\n");
 		Value* lvalue = eval(((BinOp*)e)->left, env);
 		Value* rvalue = eval(((BinOp*)e)->right, env);
 
@@ -373,7 +376,7 @@ Value* MakeFloatVal(double f) {
 Value* MakeClosureVal(const char* f,
 	Buffer x,
 	Expression* fbody,
-	symtable<Value*> fdeclenv) {
+	hmap::hashmap<Value*, const char*> fdeclenv) {
 	Closure* v = new Closure;
 	v->vType = V_Closure;
 	v->f = f;
