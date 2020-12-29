@@ -3,8 +3,8 @@
 
 #include "ast.hpp"
 #include "local.hpp"
-#include "symtable.hpp"
-
+//#include "symtable.hpp"
+#include"hashmap.h"
 // @Nocheckin
 #include <string>
 #include <sstream>
@@ -48,7 +48,7 @@ typedef struct Closure : public Value {
 	const char* f;
 	Buffer x;
 	Expression* fbody;
-	symtable<Value*> fdeclenv;
+	hmap::hashmap<Value*,const char*> fdeclenv;
 } Closure;
 
 // Values
@@ -59,11 +59,11 @@ Value* MakeFloatVal(double f);
 Value* MakeClosureVal(const char* f,
 					  Buffer x,
 	                  Expression* fbody,
-					  symtable<Value*> fdeclenv);
+					  hmap::hashmap<Value *,const char*> fdeclenv);
 
 // Interpreting
-Value* eval(Expression* Expr, symtable<Value*>* env);
-Value* lookup(const char* name, symtable<Value*>* env);
+Value* eval(Expression* Expr, hmap::hashmap<Value*,const char*>* env);
+Value* lookup(const char* name, hmap::hashmap<Value*,const char*>* env);
 std::set<const char*> freevars(Expression* e);
 bool closedin(std::vector<const char*> vs, Expression* e);
 

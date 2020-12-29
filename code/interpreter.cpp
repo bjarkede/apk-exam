@@ -1,6 +1,6 @@
 #include "interpreter.hpp"
 
-Value* lookup(const char* name, symtable<Value*>* env) {
+Value* lookup(const char* name, hmap::hashmap<Value*,const char*>* env) {
 	Value* result = env->lookup(name);
 	if (result->vType == V_NoType) FatalError("InterpreterError: Couldn't find variable [%s] in value environment.", name);
 	return result;
@@ -8,7 +8,7 @@ Value* lookup(const char* name, symtable<Value*>* env) {
 
 bool closedin(std::vector<const char*> vs, Expression* e) {
 	switch (e->expType) {
-	case E_Integer: 
+	case E_Integer:
 	{
 		return true;
 	} break;
@@ -36,12 +36,12 @@ bool closedin(std::vector<const char*> vs, Expression* e) {
 
 std::set<const char*> freevars(Expression* e) {
 	switch (e->expType) {
-	case E_Integer: 
+	case E_Integer:
 	{
 		printf("Hit an integer!\n");
 		return std::set<const char*>();
 	} break;
-	case E_Variable: 
+	case E_Variable:
 	{
 		std::set<const char*> result;
 		result.insert(((Variable*)e)->name);
@@ -66,7 +66,7 @@ std::set<const char*> freevars(Expression* e) {
 		std::set_union(erhs.begin(), erhs.end(), body.begin(), body.end(), std::inserter(result, result.begin()));
 		return result;
 	} break;
-	case E_BinOp: 
+	case E_BinOp:
 	{
 		printf("Hit an BinOp!\n");
 		auto fe1 = freevars(((BinOp*)e)->left);
@@ -75,14 +75,14 @@ std::set<const char*> freevars(Expression* e) {
 		std::set_union(fe1.begin(), fe1.end(), fe2.begin(), fe2.end(), std::inserter(result, result.begin()));
 		return result;
 	} break;
-	case E_Print: 
+	case E_Print:
 	{
 		return freevars(((Print*)e)->expr);
 	} break;
 	}
 };
 
-Value* eval(Expression* e, symtable<Value*>* env) {
+Value* eval(Expression* e, hmap::hashmap<Value*,const char*>* env) {
 	switch (e->expType) {
 	case E_Integer:
 	{
@@ -95,7 +95,7 @@ Value* eval(Expression* e, symtable<Value*>* env) {
 	case E_LetBinding: {
 		Value* xval = eval(((Let*)e)->binding, env);
 		if (((Let*)e)->expr != NULL) {
-			symtable<Value*> letbodyenv = *env;
+			hmap::hashmap<Value*,const char*> letbodyenv = *env;
 			letbodyenv.bind(xval, ((Var*)((Let*)e)->variable)->name);
 			return eval(((Let*)e)->expr, &letbodyenv); // Evaluate the expression in-scope.
 		}
@@ -107,7 +107,7 @@ Value* eval(Expression* e, symtable<Value*>* env) {
 	} break;
 	case E_LetFun: {
 		if (((LetFun*)e)->letbody != NULL) {
-			symtable<Value*> bodyenv = *env;
+			hmap::hashmap<Value*,const char*> bodyenv = *env;
 			bodyenv.bind(MakeClosureVal((((LetFun*)e)->f), (((LetFun*)e)->x), (((LetFun*)e)->fbody), *env), (((LetFun*)e)->f));
 			return eval(((LetFun*)e)->letbody, &bodyenv);
 		}
@@ -121,7 +121,7 @@ Value* eval(Expression* e, symtable<Value*>* env) {
 		Value* v = eval(((Print*)e)->expr, env);
 		switch (v->vType) {
 		case V_Integer: {
-			printf("%d\n", (((IntVal*)v)->i));
+			printf("%ld\n", (((IntVal*)v)->i));
 		} break;
 		default:
 			FatalError("InterpreterError: Couldn't print expression.");
@@ -131,7 +131,7 @@ Value* eval(Expression* e, symtable<Value*>* env) {
 	case E_Call: {
 		auto fClosure = eval(((Call*)e)->eFun, env);
 		if (fClosure->vType == V_Closure) {
-			symtable<Value*> fbodyenv = ((Closure*)fClosure)->fdeclenv;
+			hmap::hashmap<Value*,const char*> fbodyenv = ((Closure*)fClosure)->fdeclenv;
 			Buffer varNames = ((Closure*)fClosure)->x;
 			// Evaluate each expression in the function call arguments and
 			// bind them to the function body.
@@ -340,7 +340,7 @@ Value* MakeFloatVal(double f) {
 Value* MakeClosureVal(const char* f,
 	Buffer x,
 	Expression* fbody,
-	symtable<Value*> fdeclenv) {
+	hmap::hashmap<Value *,const char*> fdeclenv) {
 	Closure* v = new Closure;
 	v->vType = V_Closure;
 	v->f = f;
