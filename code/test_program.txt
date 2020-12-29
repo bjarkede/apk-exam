@@ -6,7 +6,7 @@ let f(x) =
 end
 
 // Testing fib and compile-time things
-let input = 10 end
+let input = 29 end
 
 // keyword using compile-time array generation
 print(fib(input))
@@ -15,5 +15,5 @@ print(fib(input))
 // higher than runtimefib(31) causes bad_alloc...
 let runtimefib(n) = 
 	if n < 2 then n else runtimefib(n - 1) + runtimefib(n - 2) 
-	in print(runtimefib(input)) 
+	in if input < 30 then print(runtimefib(input)) else print(fib(input)) 
 end
